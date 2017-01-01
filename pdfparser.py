@@ -80,13 +80,17 @@ def page_list_to_dict(extracted_text_list, debug=False):
         possible_hits = []
         
         for index, line in enumerate(text_list):
-            if (line.replace('\n', '') == "PAGE") or (line.replace('\n', '') == "PAGEPAGE"):
+            
+            # Various formatting on the plans pages produces different parsed text
+            cleaned_line = line.replace('\n', '').replace(':', '').strip('RV-12').strip()
+            
+            if (cleaned_line == "PAGE") or (cleaned_line == "PAGEPAGE"):
                 # If the line only reads "PAGE" or "PAGE\nPAGE", check the next line
                 # for a valid page number
                 possible_hits.append(index+1)
                 
             # Use re module to search the string for the text "PAGE ##-##"
-            page_num_search = re.search('PAGE\s?[0-9][0-9][A-Z]?-[0-9][0-9]', line.strip('\n'))
+            page_num_search = re.search('PAGE[:]?\s?[0-9][0-9][A-Z]?-[0-9][0-9]', line.strip('\n'))
             
             # If the first search failed, check if the last line was "PAGE"
             if (not page_num_search) and (index in possible_hits):
