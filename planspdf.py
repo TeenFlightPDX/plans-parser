@@ -28,8 +28,13 @@ class PlansPDF:
                 
         writer = csv.writer(output_file, delimiter=',')
         
-        # Write the header
-        writer.writerow(['page','step','text'])
+        # Checks if the csv file is new
+        import os
+        is_new_file = os.stat(os.path.realpath(output_file.name)).st_size==0
+
+        # Only write the header if the file is new
+        if is_new_file:
+            writer.writerow(['page','step','text'])
         
         for page_number in sorted(page_dict_parsed):    
             for step_number in sorted(page_dict_parsed[page_number]):
@@ -64,14 +69,25 @@ class PlansPDF:
         input_file = open(self.file_name, 'rb')
        
         if page_range:
-            start = int(page_range[0])
-            end = int(page_range[1])
-            # Add one to both values because actual PDF pages start at 1 not 0
-            # Range doesn't include the end number, so add 1 to end
-            pages_to_parse = range(start+1, end+2)
-            
-            # Extract pdfminer PDFPage objects from the pdf file
-            unparsed_pages = PDFPage.get_pages(input_file, pages_to_parse)
+            if len(page_range) is 1:
+                # Indexing is weird, subtract one
+                pages_to_parse = [int(page_range[0])-1]
+                            
+                # Extract pdfminer PDFPage objects from the pdf file
+                unparsed_pages = PDFPage.get_pages(input_file, pages_to_parse) 
+            elif len(page_range) is 2:  
+                start = int(page_range[0])
+                end = int(page_range[1])
+               
+                # Subtract one to both values because range is weird
+                # Range doesn't include the end number, so add 1 to end
+                pages_to_parse = range(start-1, end)
+                                
+                # Extract pdfminer PDFPage objects from the pdf file
+                unparsed_pages = PDFPage.get_pages(input_file, pages_to_parse)
+            else:
+                # If input was invalid, ignore and parse all
+                unparsed_pages = PDFPage.get_pages(input_file)
         else:
             unparsed_pages = PDFPage.get_pages(input_file)
                 
@@ -215,6 +231,7 @@ class PlansPDF:
                         last_step = (step_number, [step_text])
                         
                     # If the last_step object isn't None, then add the text to the last step
+                    # Don't add text that is all uppercase (Figures are upper only)
                     elif last_step:
                         last_step_number = last_step[0]
                         last_step_text = last_step[1]
