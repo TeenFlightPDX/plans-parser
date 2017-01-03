@@ -20,12 +20,10 @@ def main():
     input_name = args.input_file
 
     pdf = PlansPDF(input_name)
-    
+        
     if(args.pages):
-        page_args = args.pages.split(',')
-        if len(page_args) is 2:
-            dict_parsed = pdf.parse(page_args)
-
+        page_args = args.pages.split('-')
+        dict_parsed = pdf.parse(page_args)
     else:
         dict_parsed = pdf.parse()
 
