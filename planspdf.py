@@ -185,6 +185,9 @@ class PlansPDF:
                         # Check if the line starts with Step:
                         step_search = re.search('^Step [0-9][0-9]?: ', text)
 
+                        # Remove newline characters from original formatting
+                        text = text.replace('\n', ' ')
+
                         if step_search:
                             # Remove the text 'Step ' and ':' from the step number
                             # Only replace the first occurance of the str "Step
@@ -222,8 +225,8 @@ class PlansPDF:
                             last_step = (last_step_number, last_step_text)
 
                     # If the text IS upper and there was a last_step, save the
-                    # ast step and clear it
-                    if last_step:
+                    # last step and clear it
+                    elif last_step:
                         last_step_number = last_step[0]
                         last_step_text = last_step[1]
 
