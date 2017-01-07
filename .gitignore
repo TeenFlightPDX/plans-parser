@@ -96,3 +96,5 @@ ENV/
 
 # Rope project settings
 .ropeproject
+*.sublime-workspace
+*.sublime-project
