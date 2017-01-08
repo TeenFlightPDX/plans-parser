@@ -33,7 +33,7 @@ class CSVManager:
 
                 # Contracts the list of textboxes to one str with two new lines
                 # b/w each box
-                text = '\n'.join(text_list).strip()
+                text = '\n\n'.join(text_list).strip()
                 data = [page_number, step_number, text]
                 writer.writerow(data)
 
