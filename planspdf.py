@@ -16,11 +16,9 @@ class PlansPDF:
     def __init__(self, file_name):
         self.file_name = file_name
 
-    """
-    Fully parses the PDF file inputted in the constructor
-    """
-
     def parse(self, page_range=None):
+        """Fully parses the PDF file inputted in the constructor"""
+
         with open(self.file_name, 'rb') as input_file:
             unparsed_pages = self.convert_pages(input_file, page_range)
             parsed_pages = self.parse_pages(unparsed_pages)
@@ -29,11 +27,9 @@ class PlansPDF:
 
             return page_dict_parsed
 
-    """
-    Converts the inputed file into PDFPage objects via the pdfminer.six library
-    """
-
     def convert_pages(self, input_file, page_range):
+        """Converts the inputed file into PDFPage objects via the pdfminer.six library"""
+
         if page_range:
             if len(page_range) is 1:
                 # Quirk in page indexing, need to -1
@@ -49,11 +45,8 @@ class PlansPDF:
         else:
             return PDFPage.get_pages(input_file)
 
-    """
-    Parses text from list of unparsed pages and returns nested list of pages with text strings
-    """
-
     def parse_pages(self, unparsed_pages):
+        """Parses text from list of unparsed pages and returns nested list of pages with text strings"""
         rsrcmgr = PDFResourceManager()
         laparams = LAParams()
         device = PDFPageAggregator(rsrcmgr, laparams=laparams)
@@ -81,11 +74,9 @@ class PlansPDF:
 
         return parsed_pages
 
-    """
-    Extract the page number from the list string objects on each page
-    """
-
     def extract_page_numbers(self, parsed_pages):
+        """Extract the page number from the list string objects on each page"""
+
         # Nested dict containing key for each page and value of extracted pages
         page_dict_raw = {}
 
@@ -125,11 +116,9 @@ class PlansPDF:
 
         return page_dict_raw
 
-    """
-    Extracts steps from the list of text on each page and assembles final dict
-    """
-
     def extract_steps(self, page_dict_raw):
+        """Extracts steps from the list of text on each page and assembles final dict"""
+
         # Dict for parsed pages (Key= Page #, Value= dict of steps)
         page_dict_parsed = {}
 
